@@ -2,16 +2,23 @@
   SLAVE
 */
 const int PIN = 4;
+const int DEBUG_PIN = 5;
+
 
 
 void setup() {
-  // Serial.begin(115200);
+  pinMode(DEBUG_PIN, OUTPUT);
 }
+
+
+static bool value = 1;
 
 void loop() {
-  reset();
+  if(reset()){
+    value = !value;
+     digitalWrite(DEBUG_PIN, value);
+  }
 }
-
 
 
 bool reset() {
@@ -33,6 +40,7 @@ bool reset() {
     state = digitalRead(PIN);
     counter--;
   }
+  if(!state) return false; // если не дождались 1
   delayMicroseconds(30); // 15-60
 
   pinMode(PIN, OUTPUT);

@@ -53,7 +53,7 @@ bool reset() {
   delayMicroseconds(500); // 480 - 960
 
   bool status = false; 
-  int counter = 240 * 3.3;
+  int counter = 240 * 3.47826;
   pinMode(PIN, INPUT);
   delayMicroseconds(15); // 15-60, на линии значение 1 от подтяжки
 
