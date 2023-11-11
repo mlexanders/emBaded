@@ -52,7 +52,7 @@ bool reset() {
   digitalWrite(PIN, 0);
   delayMicroseconds(500); // 480 - 960
 
-  bool status = true; // 1 на линии
+  bool status = false; 
   int counter = 240 * 3.3;
   pinMode(PIN, INPUT);
   delayMicroseconds(15); // 15-60, на линии значение 1 от подтяжки

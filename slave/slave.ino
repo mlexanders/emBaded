@@ -25,9 +25,13 @@ bool reset() {
   bool state = false;
   pinMode(PIN, INPUT);
 
+  
+  int microseconds = 60 * 4; // 15-60
+  int counter = (microseconds * 3.47826); 
   // ждем 1 от подтяжки
-  while(!state){
+  while(!state && counter > 0){
     state = digitalRead(PIN);
+    counter--;
   }
   delayMicroseconds(30); // 15-60
 
