@@ -6,47 +6,26 @@ const int PIN = 4;
 
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(250000);
 }
 
 void loop() {
   double temp = TempRead();
-  // temp  = temp * 0.0625; // conversion accuracy is 0.0625 / LSB
-  // Serial.print("Temperature: ");
-  // Serial.print(temp);
-  // Serial.println(" °C");
-  // Serial.println("");
-
+  temp  = temp * 0.0625; // conversion accuracy is 0.0625 / LSB
+  Serial.print("Temperature: ");
+  Serial.print(temp);
+  Serial.println(" °C");
+  Serial.println("");
 
   // uint8_t address[8];
   // AddrRead(address);
 
+  /*DEBUG*/
   // if(!reset()) return;
   // byte data = B11110000;
   // DS18B20_Write(data);
   delay(1000);
 }
-
-// int readByte() {
-//   int data = 0;
-//   for (int i = 0; i < 8; i++) {
-//     data = readBit() << i;
-//   }
-// }
-
-// int readBit() {
-//   pinMode(PIN, OUTPUT);
-//   digitalWrite(PIN, 0);
-//   delayMicroseconds(2);
-
-//   pinMode(PIN, INPUT);
-//   delayMicroseconds(8);
-
-//   int data = digitalRead(PIN);
-//   delayMicroseconds(60);
-//   return data;
-// }
-
 
 bool reset() {
   pinMode(PIN, OUTPUT);
@@ -69,50 +48,47 @@ bool reset() {
   return status;
 }
 
-void DS18B20_Write(byte data) {
+void DS18B20_Write(byte data)
+{
   pinMode(PIN, OUTPUT);
-  for (int i = 0; i < 8; i++) {
+  for (int i = 0; i < 8; i++)
+  {
+    // начало таймслота
     digitalWrite(PIN, LOW);
     delayMicroseconds(10);
+
+    // если 1, то устанавлием на пине логическую 1
     if (data & 1) digitalWrite(PIN, HIGH);
-    else digitalWrite(PIN, LOW);
     data >>= 1;
-    delayMicroseconds(50);
+    // время на считывание устройством
+    delayMicroseconds(48);
+
+    // конец таймслота
     digitalWrite(PIN, HIGH);
+    delayMicroseconds(3);
   }
 }
 
-byte DS18B20_Read() {
-   byte data = 0;
-  for (uint8_t i = 8; i; i--) {
-      data >>= 1;
-      // MOW_CLI();
-      pinMode(PIN, OUTPUT);
-      delayMicroseconds(2);
-      pinMode(PIN, INPUT);
-      delayMicroseconds(8);
-      if (digitalRead(PIN)) data |= (1 << 7);
-      delayMicroseconds(60);
-      // MOW_SEI();
+byte DS18B20_Read()
+{
+  pinMode(PIN, OUTPUT);
+  digitalWrite(PIN, HIGH);
+  delayMicroseconds(2);
+  byte data = 0;
+  for (int i = 0; i < 8; i++)
+  {
+    digitalWrite(PIN, LOW);
+    delayMicroseconds(1);
+    digitalWrite(PIN, HIGH);
+    pinMode(PIN, INPUT);
+    delayMicroseconds(5);
+    data >>= 1;
+    if (digitalRead(PIN)) data |= 0x80;
+    delayMicroseconds(55);
+    pinMode(PIN, OUTPUT);
+    digitalWrite(PIN, HIGH);
   }
   return data;
-  // pinMode(PIN, OUTPUT);
-  // digitalWrite(PIN, HIGH);
-  // delayMicroseconds(2);
-  // byte data = 0;
-  // for (int i = 0; i < 8; i++) {
-  //   digitalWrite(PIN, LOW);
-  //   delayMicroseconds(1);
-  //   digitalWrite(PIN, HIGH);
-  //   pinMode(PIN, INPUT);
-  //   delayMicroseconds(5);
-  //   data >>= 1;
-  //   if (digitalRead(PIN)) data |= 0x80;
-  //   delayMicroseconds(55);
-  //   pinMode(PIN, OUTPUT);
-  //   digitalWrite(PIN, HIGH);
-  // }
-  // return data;
 }
 
 int TempRead() {
