@@ -10,12 +10,12 @@ void setup() {
 }
 
 void loop() {
-  double temp = TempRead();
-  temp  = temp * 0.0625; // conversion accuracy is 0.0625 / LSB
-  Serial.print("Temperature: ");
-  Serial.print(temp);
-  Serial.println(" °C");
-  Serial.println("");
+  // double temp = TempRead();
+  // temp  = temp * 0.0625; // conversion accuracy is 0.0625 / LSB
+  // Serial.print("Temperature: ");
+  // Serial.print(temp);
+  // Serial.println(" °C");
+  // Serial.println("");
 
   // uint8_t address[8];
   // AddrRead(address);
@@ -24,7 +24,33 @@ void loop() {
   // if(!reset()) return;
   // byte data = B11110000;
   // DS18B20_Write(data);
-  delay(1000);
+
+  // if (!reset()) return;
+  // // DS18B20_Write(0xCC);          
+  // DS18B20_Write(0xBE);         
+  // int temp1 = DS18B20_Read();    // Low byte
+  // // int temp2 = DS18B20_Read();  // High byte
+  // Serial.println(temp1, HEX);
+  // // Serial.println(temp2, HEX);
+
+  if(!reset()) return;
+
+  int data = 0;
+
+    pinMode(PIN, OUTPUT);
+    digitalWrite(PIN, LOW);
+    delayMicroseconds(5);
+    pinMode(PIN, INPUT);
+    delayMicroseconds(10);
+    data >>= 1;
+    pinMode(PIN, INPUT);
+    if (digitalRead(PIN)) data |= 0x80;
+    delayMicroseconds(45);
+    pinMode(PIN, OUTPUT);
+    digitalWrite(PIN, HIGH);
+    delayMicroseconds(5);
+
+  delay(1100);
 }
 
 bool reset() {
@@ -47,6 +73,7 @@ bool reset() {
   delayMicroseconds(200);
   return status;
 }
+
 
 void DS18B20_Write(byte data)
 {
@@ -71,22 +98,21 @@ void DS18B20_Write(byte data)
 
 byte DS18B20_Read()
 {
-  pinMode(PIN, OUTPUT);
-  digitalWrite(PIN, HIGH);
-  delayMicroseconds(2);
   byte data = 0;
   for (int i = 0; i < 8; i++)
   {
+    pinMode(PIN, OUTPUT);
     digitalWrite(PIN, LOW);
-    delayMicroseconds(1);
-    digitalWrite(PIN, HIGH);
-    pinMode(PIN, INPUT);
     delayMicroseconds(5);
+    pinMode(PIN, INPUT);
+    delayMicroseconds(10);
     data >>= 1;
+    pinMode(PIN, INPUT);
     if (digitalRead(PIN)) data |= 0x80;
-    delayMicroseconds(55);
+    delayMicroseconds(45);
     pinMode(PIN, OUTPUT);
     digitalWrite(PIN, HIGH);
+    delayMicroseconds(5);
   }
   return data;
 }

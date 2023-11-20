@@ -2,25 +2,41 @@
   SLAVE
 */
 const int PIN = 4;
-const int DEBUG_PIN = 5;
-const int DEBUG_DATA_PIN = 18;
+// const int DEBUG_PIN = 5;
+// const int DEBUG_DATA_PIN = 18;
 
 
 void setup() {
-  pinMode(DEBUG_PIN, OUTPUT);
-  pinMode(DEBUG_DATA_PIN, OUTPUT);
-  Serial.begin(250000);
+  // pinMode(DEBUG_PIN, OUTPUT);
+  // pinMode(DEBUG_DATA_PIN, OUTPUT);
+  // Serial.begin(250000);
 }
 
 
-static bool value = 1;
+// static bool value = 1;
 static byte data[2];
 
 void loop() {
   if(!reset()) return;
 
-  data[0] = read();
-  data[1]  = read();
+   //ожидаем начало таймслота
+    pinMode(PIN, INPUT);
+    while(digitalRead(PIN)){
+      delayMicroseconds(1);
+    }
+
+    // если 1, то устанавлием на пине логическую 1
+    pinMode(PIN, OUTPUT);
+    digitalWrite(PIN, HIGH);
+
+    // if (data & 1) digitalWrite(PIN, HIGH);k
+    // else digitalWrite(PIN, LOW);
+
+    // время на считывание устройством
+    delayMicroseconds(25);
+
+  // data[0] = read();
+  // data[1]  = read();
  
   // Serial.println(data[0], HEX);
   // Serial.println(data[1], HEX);
@@ -30,10 +46,14 @@ void loop() {
   // digitalWrite(DEBUG_PIN, value);
   /*DEBUG*/
 
-  // debugWrite(data);
   // if(cmd == 0xCC){
   // }
   // if(data == 0x44){
+  // }
+  // if(data[1] == 0xBE){ 
+    //TODO: // 
+      // writeDS(0xCC); //LOW byte
+      // writeDS(0xCC); //HIGH byte
   // }
 }
 
@@ -91,30 +111,37 @@ byte read() {
   return data;
 }
 
-// void write(byte data) {
-//   pinMode(PIN, OUTPUT);
-//   for (int i = 0; i < 8; i++) {
-//     digitalWrite(PIN, LOW);
-//     delayMicroseconds(10);
-//     if (data & 1) digitalWrite(PIN, HIGH);
-//     else digitalWrite(PIN, LOW);
-//     data >>= 1;
-//     delayMicroseconds(50);
-//     digitalWrite(PIN, HIGH);
-//   }
-// }
+void writeDS(byte data) {
 
-void debugWrite(byte data){
-  for(int i = 0; i < 8; i++){
-    delayMicroseconds(10);
+  for (int i = 0; i < 8; i++) {
+    //ожидаем начало таймслота
+    pinMode(PIN, INPUT);
+    while(digitalRead(PIN)){
+      delayMicroseconds(1);
+    }
 
-    digitalWrite(DEBUG_DATA_PIN, data << i);
-    delayMicroseconds(10);
+    // если 1, то устанавлием на пине логическую 1
+    pinMode(PIN, OUTPUT);
+    if (data & 1) digitalWrite(PIN, HIGH);
+    else digitalWrite(PIN, LOW);
+    data >>= 1;
 
-    value = !value;
-    digitalWrite(DEBUG_PIN, value);
+    // время на считывание устройством
+    delayMicroseconds(25);
   }
 }
+
+// void debugWrite(byte data){
+//   for(int i = 0; i < 8; i++){
+//     delayMicroseconds(10);
+
+//     digitalWrite(DEBUG_DATA_PIN, data << i);
+//     delayMicroseconds(10);
+
+//     value = !value;
+//     digitalWrite(DEBUG_PIN, value);
+//   }
+// }
 
 
 
