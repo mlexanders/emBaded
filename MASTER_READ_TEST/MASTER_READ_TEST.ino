@@ -20,9 +20,11 @@ void loop() {
   
   Serial.println("");
 
+
+  // TODO:  
   for(int i = 7; i >= 0; i--){
     inData[i] = readBit();
-    delayMicroseconds(3);
+    delayMicroseconds(3); // added
   }
 
   for(int i = 0; i < 8; i++){
@@ -39,7 +41,7 @@ uint8_t readBit(){
   noInterrupts();
   pinMode(PIN, OUTPUT);
   digitalWrite(PIN, LOW);
-  delayMicroseconds(5);
+  delayMicroseconds(5); // change 3 ->> 5
 
   pinMode(PIN, INPUT);
   delayMicroseconds(10);

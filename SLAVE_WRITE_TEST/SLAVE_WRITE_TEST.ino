@@ -7,7 +7,7 @@ void setup() {
   Serial.begin(250000);
 }
 
-uint data = 170;
+uint data = 171;
 
 void loop() {
   if(!reset()) return;
@@ -24,7 +24,7 @@ void writeBit(uint8_t bit){
   while(digitalRead(PIN));
 
   pinMode(PIN, OUTPUT);
-  delayMicroseconds(2); //2
+  delayMicroseconds(2); // change 10 ->> 2
   if(bit & 1) digitalWrite(PIN, HIGH);
   else digitalWrite(PIN, LOW);
 
