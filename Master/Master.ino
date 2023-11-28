@@ -10,12 +10,12 @@ void setup() {
 }
 
 void loop() {
-  // double temp = TempRead();
-  // temp  = temp * 0.0625; // conversion accuracy is 0.0625 / LSB
-  // Serial.print("Temperature: ");
-  // Serial.print(temp);
-  // Serial.println(" °C");
-  // Serial.println("");
+  double temp = TempRead();
+  temp  = temp * 0.0625; // conversion accuracy is 0.0625 / LSB
+  Serial.print("Temperature: ");
+  Serial.print(temp);
+  Serial.println(" °C");
+  Serial.println("");
 
   // uint8_t address[8];
   // AddrRead(address);

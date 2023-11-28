@@ -4,16 +4,32 @@
 const int PIN = 4;
 
 void setup() {
-  Serial.begin(250000);
+  Serial.begin(115200);
 }
 
-uint data = 171;
+uint8_t temp[2] ={
+  B00000000, B00000000 
+};
+byte cmd[2];
+
 
 void loop() {
   if(!reset()) return;
 
+  cmd[0] = read();
+  cmd[1] = read();
+
+  if(cmd[1] == 0xBE){
+    write(temp[1]);
+    write(temp[0]);
+  }
+  // Serial.println(cmd[0]);
+  // Serial.println(cmd[1]);
+}
+
+void write(uint8_t byte){
   for(int i = 0; i < 8; i++){
-    writeBit((data >> i) & 1);
+    writeBit((byte >> i) & 1);
   }
 }
 
@@ -28,7 +44,7 @@ void writeBit(uint8_t bit){
   if(bit & 1) digitalWrite(PIN, HIGH);
   else digitalWrite(PIN, LOW);
 
-  delayMicroseconds(53);
+  delayMicroseconds(30);//53
   pinMode(PIN, INPUT);
 
   interrupts();
